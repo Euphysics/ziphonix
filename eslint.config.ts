@@ -66,6 +66,7 @@ const rules = {
   '@typescript-eslint/no-use-before-define': ['error'],
   'import/prefer-default-export': 'off',
   '@typescript-eslint/no-unused-vars': 'warn',
+  '@typescript-eslint/no-empty-object-type': 'off',
   'unused-imports/no-unused-imports': 'error',
   'no-shadow': 'off',
   'import/no-extraneous-dependencies': 'off',

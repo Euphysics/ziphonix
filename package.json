@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "bun run --hot --inspect=6499/debug src/index.ts",
+    "docs": "bun src/docs.ts",
     "typecheck": "tsc --noEmit -p tsconfig.build.json",
     "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "build:js": "bun esbuild.config.ts",
@@ -71,6 +72,7 @@
     "prettier": "^3.4.2",
     "prisma": "^6.1.0",
     "secretlint": "^9.0.0",
-    "tsc-alias": "^1.8.10"
+    "tsc-alias": "^1.8.10",
+    "yaml": "^2.7.0"
   }
 }

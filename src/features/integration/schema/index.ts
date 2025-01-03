@@ -2,11 +2,13 @@ import { z } from '@hono/zod-openapi';
 
 import { NameSchema } from '@/features/account/schema';
 
-const ProviderSchema = z.enum(['GOOGLE', 'GITHUB', 'CREDENTIAL']).openapi({
-  description: 'Authentication provider',
-  example: 'GOOGLE',
-});
-const EmailSchema = z.string().email().openapi({
+const ProviderSchema = z
+  .enum(['GOOGLE', 'GITHUB', 'CREDENTIAL'])
+  .openapi('AuthProvider', {
+    description: 'Authentication provider',
+    example: 'GOOGLE',
+  });
+const EmailSchema = z.string().email().openapi('UserEmail', {
   description: 'User email',
   example: 'example@example.com',
 });
@@ -16,7 +18,7 @@ const PasswordSchema = z
   .regex(/[a-z]/)
   .regex(/[A-Z]/)
   .regex(/[0-9]/)
-  .openapi({
+  .openapi('UserPassword', {
     description: 'User password',
     example: 'Password123',
   });
@@ -26,7 +28,7 @@ export const CredentialsSchema = z
     password: PasswordSchema.optional(),
     provider: ProviderSchema,
   })
-  .openapi({
+  .openapi('UserCredentials', {
     description: 'User credentials',
     example: {
       email: 'example@example.com',
@@ -41,7 +43,7 @@ export const RegisterSchema = z
     password: PasswordSchema,
     provider: ProviderSchema,
   })
-  .openapi({
+  .openapi('UserRegister', {
     description: 'User registration input',
     example: {
       name: 'Alice',

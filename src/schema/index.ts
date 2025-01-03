@@ -2,22 +2,28 @@ import { z } from '@hono/zod-openapi';
 
 const BadRequestSchema = z.object({
   code: z.literal(400),
-  message: z.literal('Bad Request'),
+  message: z.literal('Bad Request').openapi('BadRequest', {
+    description: 'Invalid request',
+  }),
 });
 const UnauthorizedSchema = z.object({
   code: z.literal(401),
-  message: z.literal('Unauthorized'),
+  message: z.literal('Unauthorized').openapi('Unauthorized', {
+    description: 'Unauthorized request',
+  }),
 });
 const NotFoundSchema = z.object({
   code: z.literal(404),
-  message: z.string().openapi({
+  message: z.string().openapi('Notfound', {
     description: 'Resource not found',
     example: 'User not found',
   }),
 });
 const InternalServerErrorSchema = z.object({
   code: z.literal(500),
-  message: z.literal('Internal Server Error'),
+  message: z.literal('Internal Server Error').openapi('InternalServerError', {
+    description: 'Internal server error',
+  }),
 });
 export const ErrorResponse = {
   400: {
