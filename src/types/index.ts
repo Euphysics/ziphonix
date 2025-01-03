@@ -46,10 +46,6 @@ export type LoggerConfig = {
   bufferSize: number;
 };
 
-export interface IContextHelper {
-  getRequestId(): string;
-}
-
 export type ZodResult =
   | {
       success: true;

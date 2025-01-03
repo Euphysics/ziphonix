@@ -4,9 +4,10 @@ import chalk from 'chalk';
 import { injectable, inject } from 'inversify';
 
 import { TYPES } from '@/containers/types';
+import { getRequestId } from '@/middlewares/requestId';
 import { LogLevel } from '@/types';
 
-import type { AppLogger, LoggerConfig, IConfig, IContextHelper } from '@/types';
+import type { AppLogger, LoggerConfig, IConfig } from '@/types';
 import type { ChalkInstance } from 'chalk';
 
 interface LogMessage {
@@ -32,10 +33,7 @@ export class Logger implements AppLogger {
     [LogLevel.FATAL]: chalk.bgRed.white,
   };
 
-  constructor(
-    @inject(TYPES.Config) private readonly configService: IConfig,
-    @inject(TYPES.ContextHelper) private readonly contextHelper: IContextHelper,
-  ) {
+  constructor(@inject(TYPES.Config) private readonly configService: IConfig) {
     this.config = this.configService.get('logger');
 
     if (this.config.enableFile && !this.config.filePath) {
@@ -59,7 +57,7 @@ export class Logger implements AppLogger {
   private formatMessage(level: LogLevel, message: string): string {
     const timestamp = this.getTimestamp();
     const levelName = LogLevel[level];
-    const requestId = this.contextHelper.getRequestId();
+    const requestId = getRequestId();
 
     if (this.config.format === 'json') {
       const logObject: LogMessage = {

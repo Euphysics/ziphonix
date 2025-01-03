@@ -7,11 +7,10 @@ import { BaseApp } from '@/app';
 import { Config } from '@/config';
 import { TYPES } from '@/containers/types';
 import { bindIfNotBound } from '@/containers/utils';
-import { ContextHelper } from '@/context';
 import { ErrorHandler } from '@/pkgs/error';
 import { Logger } from '@/pkgs/logging';
 
-import type { AppConfig, AppLogger, IConfig, IContextHelper } from '@/types';
+import type { AppConfig, AppLogger, IConfig } from '@/types';
 
 export const createBaseContainer = (config?: Partial<AppConfig>): Container => {
   const container = new Container();
@@ -19,12 +18,6 @@ export const createBaseContainer = (config?: Partial<AppConfig>): Container => {
   // Common bindings
   container.bind<IConfig>(TYPES.Config).toConstantValue(new Config(config));
   bindIfNotBound<BaseApp>(container, TYPES.BaseApp, BaseApp, 'Singleton');
-  bindIfNotBound<IContextHelper>(
-    container,
-    TYPES.ContextHelper,
-    ContextHelper,
-    'Singleton',
-  );
   bindIfNotBound<ErrorHandler>(
     container,
     TYPES.ErrorHandler,

@@ -17,6 +17,7 @@ export default defineConfig({
         'src/features/account/index.ts',
         'src/features/auth/index.ts',
         'src/features/integration/index.ts',
+        'src/**/*.test.ts',
         ...defaultExclude,
       ],
     },

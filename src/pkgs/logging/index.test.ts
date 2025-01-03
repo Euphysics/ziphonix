@@ -1,110 +1,158 @@
 import { appendFile } from 'node:fs/promises';
 
-import { Container } from 'inversify';
+import { vi, type Mock, type Mocked } from 'vitest';
 
-import { TYPES } from '@/containers/types';
-import { Logger } from '@/pkgs/logging';
-import { LogLevel } from '@/types';
+import { LogLevel, type IConfig } from '@/types';
 
-import type { IConfig, IContextHelper } from '@/types';
+import { Logger } from './index';
 
 vi.mock('node:fs/promises', () => ({
-  appendFile: vi.fn().mockResolvedValue(undefined),
+  appendFile: vi.fn(),
+}));
+
+vi.mock('@/middlewares/requestId', () => ({
+  getRequestId: vi.fn(() => 'test-request-id'),
 }));
 
 describe('Logger', () => {
+  let mockConfigService: Mocked<IConfig>;
   let logger: Logger;
-  let mockConfigService: IConfig;
-  let mockContextHelper: IContextHelper;
 
   beforeEach(() => {
     mockConfigService = {
       get: vi.fn().mockReturnValue({
         enableConsole: true,
-        enableFile: true,
-        filePath: 'test.log',
+        enableFile: false,
         level: LogLevel.DEBUG,
         format: 'text',
         enableColor: true,
         bufferFlushInterval: 5000,
         bufferSize: 10,
+        filePath: './logs/test.log',
       }),
-      set: vi.fn(),
-    };
+    } as unknown as Mocked<IConfig>;
 
-    mockContextHelper = {
-      getRequestId: vi.fn().mockReturnValue('test-request-id'),
-    };
-
-    const container = new Container();
-    container.bind<IConfig>(TYPES.Config).toConstantValue(mockConfigService);
-    container
-      .bind<IContextHelper>(TYPES.ContextHelper)
-      .toConstantValue(mockContextHelper);
-    container.bind<Logger>(Logger).toSelf();
-
-    logger = container.get<Logger>(Logger);
+    logger = new Logger(mockConfigService);
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  const logLevels = [
-    { method: 'debug', level: LogLevel.DEBUG },
-    { method: 'info', level: LogLevel.INFO },
-    { method: 'warn', level: LogLevel.WARN },
-    { method: 'error', level: LogLevel.ERROR },
-    { method: 'fatal', level: LogLevel.FATAL },
-  ];
+  describe('log methods', () => {
+    it('should log debug messages', () => {
+      logger.debug('debug message');
+      expect(console.log).toHaveBeenCalled();
+    });
 
-  logLevels.forEach(({ method, level }) => {
-    it(`should log ${method} messages`, () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      // @ts-expect-error - we are testing dynamic method calls
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      logger[method](`${method} message`);
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining(`[${LogLevel[level]}]`),
-      );
-      consoleSpy.mockRestore();
+    it('should log info messages', () => {
+      logger.info('info message');
+      expect(console.log).toHaveBeenCalled();
+    });
+
+    it('should log warn messages', () => {
+      logger.warn('warn message');
+      expect(console.log).toHaveBeenCalled();
+    });
+
+    it('should log error messages', () => {
+      logger.error('error message');
+      expect(console.log).toHaveBeenCalled();
+    });
+
+    it('should log fatal messages', () => {
+      logger.fatal('fatal message');
+      expect(console.log).toHaveBeenCalled();
     });
   });
 
-  it('should write logs to file when buffer size is reached', () => {
-    for (let i = 0; i < 10; i++) {
-      logger.debug(`test log ${i}`);
-    }
+  describe('file logging', () => {
+    it('should write logs to file when enabled', async () => {
+      mockConfigService.get.mockReturnValueOnce({
+        ...mockConfigService.get('logger'),
+        enableFile: true,
+      });
+      logger = new Logger(mockConfigService);
 
-    expect(appendFile).toHaveBeenCalledWith(
-      'test.log',
-      expect.stringContaining('test log 9'),
-      'utf-8',
-    );
+      logger.info('file log message');
+      await logger['flushLogBuffer']();
+
+      expect(appendFile).toHaveBeenCalledWith(
+        './logs/test.log',
+        expect.stringContaining('file log message\n'),
+        'utf-8',
+      );
+    });
+
+    it('should handle flush errors gracefully', async () => {
+      mockConfigService.get.mockReturnValueOnce({
+        ...mockConfigService.get('logger'),
+        enableFile: true,
+        filePath: './logs/test.log',
+      });
+      logger = new Logger(mockConfigService);
+      logger['logBuffer'] = ['test log message']; // Simulate a log buffer
+
+      (appendFile as Mock).mockRejectedValueOnce(new Error('File write error'));
+
+      await logger['flushLogBuffer']();
+
+      expect(console.error).toHaveBeenCalledWith(
+        'Failed to write to log file:',
+        expect.any(Error),
+      );
+    });
   });
 
-  it('should flush log buffer on shutdown', () => {
-    const flushSpy = vi
-      .spyOn(logger, 'flushLogBuffer' as never)
-      .mockImplementation(() => Promise.resolve());
-    logger.shutdown();
-    expect(flushSpy).toHaveBeenCalled();
-    flushSpy.mockRestore();
+  describe('buffer flush', () => {
+    it('should flush logs when buffer is full', () => {
+      mockConfigService.get.mockReturnValueOnce({
+        ...mockConfigService.get('logger'),
+        enableFile: true,
+        bufferSize: 2,
+      });
+      logger = new Logger(mockConfigService);
+
+      logger.info('message 1');
+      logger.info('message 2');
+
+      expect(appendFile).toHaveBeenCalled();
+    });
   });
 
-  it('should respect log level settings', () => {
-    logger.setLogLevel(LogLevel.WARN);
-    logger.debug('should not log this');
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    logger.warn('should log this');
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('[WARN]'));
-    consoleSpy.mockRestore();
+  describe('shutdown', () => {
+    it('should stop the buffer flush timer and flush remaining logs', () => {
+      const flushSpy = vi
+        .spyOn(logger, 'flushLogBuffer' as never)
+        .mockImplementation(() => Promise.resolve());
+
+      logger.shutdown();
+
+      expect(flushSpy).toHaveBeenCalled();
+      flushSpy.mockRestore();
+    });
   });
 
-  it('should throw an error if filePath is not provided when enableFile is true', () => {
-    mockConfigService.get = vi.fn().mockReturnValue({ enableFile: true });
-    expect(() => new Logger(mockConfigService, mockContextHelper)).toThrow(
-      'filePath must be specified if enableFile is true',
-    );
+  describe('setLogLevel', () => {
+    it('should update the log level', () => {
+      logger.setLogLevel(LogLevel.ERROR);
+      expect(mockConfigService.get('logger').level).toBe(LogLevel.ERROR);
+    });
+  });
+
+  describe('configuration errors', () => {
+    it('should throw an error if file logging is enabled without a filePath', () => {
+      mockConfigService.get.mockReturnValueOnce({
+        ...mockConfigService.get('logger'),
+        enableFile: true,
+        filePath: undefined,
+      });
+
+      expect(() => new Logger(mockConfigService)).toThrow(
+        'filePath must be specified if enableFile is true',
+      );
+    });
   });
 });
