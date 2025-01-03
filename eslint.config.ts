@@ -19,7 +19,12 @@ const compat = new FlatCompat({
 });
 
 // Base ignore patterns
-const ignorePatterns = ['**/node_modules/', '**/out/'];
+const ignorePatterns = [
+  '**/node_modules/',
+  '**/out/',
+  '**/coverage/',
+  '**/dist/',
+];
 
 // Import resolver settings
 const importResolverSettings = {

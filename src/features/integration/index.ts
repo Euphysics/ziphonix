@@ -1,8 +1,8 @@
-import { bootstrap } from '@/bootstrap';
+import { baseBootstrap } from '@/bootstrap';
 import { Prefix } from '@/constants/prefix';
 import { integrationBootstrap } from '@/features/integration/bootstrap';
 
-const { hono, container } = bootstrap();
+const { hono, container } = baseBootstrap();
 
 const integrationApp = hono.route(
   Prefix.INTEGRATION,

@@ -3,11 +3,10 @@ import { mkdirSync, writeFileSync } from 'fs';
 import { stringify } from 'yaml';
 
 import { docsBootstrap } from '@/bootstrap';
-import { registerDocsRoutes } from '@/routes';
 
-const { hono, container } = docsBootstrap();
+const hono = docsBootstrap();
 
-const docs = registerDocsRoutes(hono, container).getOpenAPIDocument({
+const docs = hono.getOpenAPIDocument({
   openapi: '3.0.3',
   info: {
     title: 'Ziphonix',

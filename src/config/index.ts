@@ -23,7 +23,10 @@ export class Config implements IConfig {
   private config: AppConfig;
 
   constructor(initialConfig: Partial<AppConfig> = {}) {
-    this.config = { ...defaultAppConfig, ...initialConfig };
+    this.config = {
+      port: initialConfig.port || defaultAppConfig.port,
+      logger: initialConfig.logger || defaultAppConfig.logger,
+    };
   }
 
   public set<K extends keyof AppConfig>(key: K, value: AppConfig[K]): void {

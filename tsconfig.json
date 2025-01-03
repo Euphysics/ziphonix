@@ -19,6 +19,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
+    "types": ["vitest/globals"],
     "paths": {
       "@/*": ["src/*"]
     }
