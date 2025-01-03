@@ -1,0 +1,76 @@
+{
+  "name": "ziphonix",
+  "version": "0.1.0",
+  "description": "Ziphonix is a modern backend template that leverages Hono, Prisma, Zod, Inversify, and Auth.js to deliver a scalable, type-safe, and DI-driven architecture for web applications. It also supports automatic generation of OpenAPI specifications, making it easier to document and integrate APIs.",
+  "type": "module",
+  "main": "out/dist/index.js",
+  "files": [
+    "out"
+  ],
+  "scripts": {
+    "dev": "bun run --hot --inspect=6499/debug src/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
+    "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build:js": "bun esbuild.config.ts",
+    "build:js:micro": "bun esbuild.config.ts --microservices",
+    "clean": "rm -rf out",
+    "build": "bun run clean && bun run build:types && bun run build:js",
+    "build:micro": "bun run clean && bun run build:types && bun run build:js:micro",
+    "start": "NODE_ENV=production bun out/dist/index.js",
+    "start:account": "NODE_ENV=production bun out/dist/account/index.js",
+    "start:auth": "NODE_ENV=production bun out/dist/auth/index.js",
+    "start:integration": "NODE_ENV=production bun out/dist/integration/index.js",
+    "lint": "eslint --flag unstable_ts_config --fix ./ --cache --cache-location ./node_modules/.cache/.eslintcache",
+    "format": "prettier --write --cache ./",
+    "security": "secretlint --secretlintignore .gitignore '**/*'",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "migrate:prod": "prisma migrate deploy",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --flag unstable_ts_config --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,scss,less}": [
+      "prettier --write"
+    ],
+    "*": [
+      "secretlint"
+    ]
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.18.3",
+    "@prisma/client": "^6.1.0",
+    "chalk": "^5.4.1",
+    "hono": "^4.6.15",
+    "inversify": "^6.2.1",
+    "reflect-metadata": "^0.2.2",
+    "uuid": "^11.0.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.17.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^9.0.0",
+    "@types/eslint__eslintrc": "^2.1.2",
+    "@types/node": "^22.10.4",
+    "@typescript-eslint/eslint-plugin": "^8.19.0",
+    "@typescript-eslint/parser": "^8.19.0",
+    "esbuild": "^0.24.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.4.2",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "prisma": "^6.1.0",
+    "secretlint": "^9.0.0",
+    "tsc-alias": "^1.8.10"
+  }
+}

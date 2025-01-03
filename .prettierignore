@@ -1,0 +1,9 @@
+node_modules/
+out/
+docs/
+documentation/
+coverage/
+*.log
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

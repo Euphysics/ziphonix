@@ -2,13 +2,14 @@
 
 ## Overview
 
-Ziphonix is a modern backend template that leverages **Hono**, **Prisma**, **Zod**, and **Inversify** to deliver a scalable, type-safe, and DI-driven architecture for web applications.
+Ziphonix is a modern backend template that leverages **Hono**, **Prisma**, **Zod**, and **Inversify** to deliver a scalable, type-safe, and DI-driven architecture for web applications. It also supports automatic generation of OpenAPI specifications, making it easier to document and integrate APIs.
 
 ## Features
 
 - **Strict Type Safety**: Powered by Zod for runtime schema validation and type definitions.
 - **Dependency Injection**: Implemented using Inversify for modular and testable code.
 - **RPC Implementation**: Enables structured remote procedure calls with clear contracts.
+- **OpenAPI Specification**: Automatically generate OpenAPI documentation for your API.
 - **Customizable Builds**: Use esbuild to produce a single consolidated service or modular microservices.
 - **Developer Experience**:
   - **Linting**: Configured with ESLint 9 for maintaining code quality.
@@ -67,16 +68,13 @@ Ziphonix is a modern backend template that leverages **Hono**, **Prisma**, **Zod
    ```bash
    bun run migrate
    ```
+7. Run the development server:
+   Start the server with hot reloading and ensure the OpenAPI documentation is available:
+   ```bash
+   bun run dev
+   ```
 
-### Development
-
-Start the development server with hot reloading:
-
-```bash
-bun run dev
-```
-
-### Building
+## Building
 
 Choose between a single consolidated build or microservice-based builds:
 
@@ -89,6 +87,10 @@ Choose between a single consolidated build or microservice-based builds:
   bun run build:micro
   ```
 
+## API Documentation
+
+The OpenAPI specification for your API is automatically generated and accessible during development. Visit the `/docs` endpoint to view and interact with the API documentation.
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
@@ -96,4 +98,3 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-

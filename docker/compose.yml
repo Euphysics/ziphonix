@@ -1,0 +1,15 @@
+volumes:
+  walk-data:
+    external: true
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:17.2-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - walk-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    restart: always

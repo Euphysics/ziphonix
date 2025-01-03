@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas = ["account", "auth"]
+}
+
+enum Role {
+  USER
+  ADMIN
+
+  @@schema("account")
+}
+
+enum Provider {
+  CREDENTIAL
+  GOOGLE
+  GITHUB
+
+  @@schema("auth")
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+  name String
+  role Role @default(USER)
+  lastLogin DateTime? @map("last_login") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt DateTime @updatedAt @db.Timestamptz(6) @map("updated_at")
+  @@map("users")
+  @@schema("account")
+  Authentication Authentication[]
+}
+
+model Authentication {
+  id String @id @default(uuid()) @db.Uuid
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.Uuid @map("user_id")
+  emailHash String @unique @map("email_hash")
+  emailEncrypted String @map("email_encrypted")
+  password String?
+  provider Provider
+  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt DateTime @updatedAt @db.Timestamptz(6) @map("updated_at")
+  @@map("authentications")
+  @@schema("auth")
+  @@unique([userId, provider])
+}

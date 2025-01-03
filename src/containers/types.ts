@@ -1,0 +1,18 @@
+export const TYPES = {
+  BaseApp: Symbol.for('BaseApp'),
+  Config: Symbol.for('Config'),
+  ContextHelper: Symbol.for('ContextHelper'),
+  ErrorHandler: Symbol.for('ErrorHandler'),
+  Hono: Symbol.for('Hono'),
+  Logger: Symbol.for('Logger'),
+  OpenAPIHono: Symbol.for('OpenAPIHono'),
+  PrismaClient: Symbol.for('PrismaClient'),
+  AuthManager: Symbol.for('AuthManager'),
+  IntegrationApp: Symbol.for('IntegrationApp'),
+  AccountApp: Symbol.for('AccountApp'),
+  UserRepository: Symbol.for('UserRepository'),
+  UserService: Symbol.for('UserService'),
+  AuthApp: Symbol.for('AuthApp'),
+  AuthRepository: Symbol.for('AuthRepository'),
+  AuthService: Symbol.for('AuthService'),
+};

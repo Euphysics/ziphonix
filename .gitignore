@@ -1,0 +1,17 @@
+# deps
+node_modules/
+
+# build
+dist/
+out/
+
+# logs
+logs/
+
+# misc
+.DS_Store
+.env
+.env.local
+
+# IDE
+.idea/
