@@ -11,13 +11,14 @@ import { requestId } from '@/middlewares/requestId';
 
 import type { ErrorHandler } from '@/pkgs/error';
 import type { AppLogger } from '@/types';
-import type { Hono, Context } from 'hono';
+import type { OpenAPIHono } from '@hono/zod-openapi';
+import type { Context } from 'hono';
 import type { ClientErrorStatusCode } from 'hono/utils/http-status';
 
 @injectable()
 export class BaseApp {
   constructor(
-    @inject(TYPES.Hono) private readonly app: Hono,
+    @inject(TYPES.OpenAPIHono) private readonly app: OpenAPIHono,
     @inject(TYPES.Logger) private readonly logger: AppLogger,
     @inject(TYPES.ErrorHandler) private readonly errorHandler: ErrorHandler,
   ) {}

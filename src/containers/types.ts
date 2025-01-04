@@ -3,7 +3,6 @@ export const TYPES = {
   Config: Symbol.for('Config'),
   ContextHelper: Symbol.for('ContextHelper'),
   ErrorHandler: Symbol.for('ErrorHandler'),
-  Hono: Symbol.for('Hono'),
   Logger: Symbol.for('Logger'),
   OpenAPIHono: Symbol.for('OpenAPIHono'),
   PrismaClient: Symbol.for('PrismaClient'),

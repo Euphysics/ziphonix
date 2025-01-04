@@ -50,6 +50,7 @@ describe('bootstrap', () => {
 
     mockOpenAPIHono = {
       route: vi.fn().mockReturnThis(),
+      basePath: vi.fn().mockReturnThis(),
     } as unknown as Mocked<OpenAPIHono>;
 
     mockContainer = {

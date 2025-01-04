@@ -1,6 +1,5 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { PrismaClient } from '@prisma/client';
-import { Hono } from 'hono';
 import { Container } from 'inversify';
 
 import { BaseApp } from '@/app';
@@ -25,12 +24,11 @@ export const createBaseContainer = (config?: Partial<AppConfig>): Container => {
     'Singleton',
   );
   bindIfNotBound<AppLogger>(container, TYPES.Logger, Logger, 'Singleton');
-  bindIfNotBound<Hono>(container, TYPES.Hono, Hono, 'Singleton');
   bindIfNotBound<OpenAPIHono>(
     container,
     TYPES.OpenAPIHono,
     OpenAPIHono,
-    'Singleton',
+    'Transient',
   );
   bindIfNotBound<PrismaClient>(
     container,

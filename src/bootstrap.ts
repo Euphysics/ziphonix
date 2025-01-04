@@ -25,6 +25,7 @@ export const docsBootstrap = () => {
   const container = createBaseContainer();
   const openAPIHono = container.get<OpenAPIHono>(TYPES.OpenAPIHono);
   return openAPIHono
+    .basePath(Prefix.GLOBAL)
     .route(Prefix.ACCOUNT, accountBootstrap(container))
     .route(Prefix.AUTH, authBootstrap(container))
     .route(Prefix.INTEGRATION, integrationBootstrap(container));
