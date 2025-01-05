@@ -3,12 +3,23 @@
   "version": "0.1.0",
   "description": "Ziphonix is a modern backend template that leverages Hono, Prisma, Zod, Inversify, and Auth.js to deliver a scalable, type-safe, and DI-driven architecture for web applications. It also supports automatic generation of OpenAPI specifications, making it easier to document and integrate APIs.",
   "type": "module",
-  "main": "out/dist/index.js",
+  "main": "out/index.js",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./out/index.js",
+      "types": "./out/index.d.ts"
+    }
+  },
   "files": [
     "out"
   ],
   "scripts": {
-    "dev": "bun run --hot --inspect=6499/debug src/index.ts",
+    "dev": "bun run --hot --inspect=6499/debug scripts/dev/start.ts",
+    "dev:account": "bun run --hot --inspect=6499/debug scripts/dev/start.micro.ts account 3001",
+    "dev:auth": "bun run --hot --inspect=6499/debug scripts/dev/start.micro.ts auth 3002",
+    "dev:integration": "bun run --hot --inspect=6499/debug scripts/dev/start.micro.ts integration 3003",
     "docs": "bun src/docs.ts",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
@@ -19,10 +30,12 @@
     "clean": "rm -rf out",
     "build": "bun run clean && bun run build:types && bun run build:js",
     "build:micro": "bun run clean && bun run build:types && bun run build:js:micro",
-    "start": "NODE_ENV=production bun out/dist/index.js",
-    "start:account": "NODE_ENV=production bun out/dist/account/index.js",
-    "start:auth": "NODE_ENV=production bun out/dist/auth/index.js",
-    "start:integration": "NODE_ENV=production bun out/dist/integration/index.js",
+    "build:pack": "bun run build && bun pm pack --ignore-scripts",
+    "build:pack:micro": "bun run build:micro && bun pm pack --ignore-scripts",
+    "start": "NODE_ENV=production bun scripts/prod/start.ts",
+    "start:account": "NODE_ENV=production bun scripts/prod/start.micro.ts account 3001",
+    "start:auth": "NODE_ENV=production bun scripts/prod/start.micro.ts auth 3002",
+    "start:integration": "NODE_ENV=production bun scripts/prod/start.micro.ts integration 3003",
     "lint": "eslint --flag unstable_ts_config --fix ./ --cache --cache-location ./node_modules/.cache/.eslintcache",
     "format": "prettier --write --cache ./",
     "security": "secretlint --secretlintignore .gitignore '**/*'",
@@ -58,7 +71,7 @@
     "@eslint/js": "^9.17.0",
     "@secretlint/secretlint-rule-preset-recommend": "^9.0.0",
     "@types/eslint__eslintrc": "^2.1.2",
-    "@types/node": "^22.10.4",
+    "@types/node": "^22.10.5",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "@vitest/coverage-v8": "^2.1.8",

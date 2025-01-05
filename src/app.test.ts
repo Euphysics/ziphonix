@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { Hono } from 'hono';
+import { OpenAPIHono } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
 import { testClient } from 'hono/testing';
 
@@ -16,7 +16,7 @@ import type { Mocked } from 'vitest';
 describe('BaseApp', () => {
   let mockLogger: Mocked<AppLogger>;
   let mockErrorHandler: Mocked<ErrorHandler>;
-  let app: Hono;
+  let app: OpenAPIHono;
   let baseApp: BaseApp;
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('BaseApp', () => {
       ),
     } as unknown as Mocked<ErrorHandler>;
 
-    app = new Hono();
+    app = new OpenAPIHono();
     baseApp = new BaseApp(app, mockLogger, mockErrorHandler);
   });
 

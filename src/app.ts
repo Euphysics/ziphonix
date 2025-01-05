@@ -50,13 +50,14 @@ export class BaseApp {
   get hono() {
     return (
       this.app
-        .basePath(Prefix.GLOBAL)
         // Middlewares
         .use(contextStorage())
         .use(requestId())
         .use(loggerMiddleware(this.logger))
         .use(csrf())
         .use(secureHeaders())
+        // Base path
+        .basePath(Prefix.GLOBAL)
         // Error handler
         .onError(this.handleError)
         .notFound(this.handleNotFound)

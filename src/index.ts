@@ -1,7 +1,5 @@
 import { bootstrap } from '@/bootstrap';
 
-const app = bootstrap();
-
-export default app;
+export const app = bootstrap();
 
 export type AppType = typeof app;

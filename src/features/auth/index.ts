@@ -4,8 +4,6 @@ import { authBootstrap } from '@/features/auth/bootstrap';
 
 const { hono, container } = baseBootstrap();
 
-const authApp = hono.route(Prefix.AUTH, authBootstrap(container));
-
-export default authApp;
+export const authApp = hono.route(Prefix.AUTH, authBootstrap(container));
 
 export type AuthAppType = typeof authApp;

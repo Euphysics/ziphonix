@@ -5,7 +5,7 @@ import type { AppType } from '@/index';
 const app = hc<AppType>('http://localhost:3000');
 
 void (async () => {
-  // const result = await app.register.$post({
+  // const result = await app.api.register.$post({
   //   json: {
   //     name: 'John Doe',
   //     email: 'example@example.com',
@@ -30,9 +30,9 @@ void (async () => {
     const data = await login.json();
     console.log(data);
   }
-  // const result = await app.account.profile[':id'].$get({
+  // const result = await app.api.account.profile[':id'].$get({
   //   param: {
-  //     id: '30e5243a-2266-4986-b18f-5ebca737aae7',
+  //     id: '0fcaa130-7b89-4a5b-9780-53beca9e780',
   //   },
   // });
   // if (result.ok) {

@@ -38,7 +38,7 @@ const entryPoints = isMicroserviceBuild
 
 build({
   entryPoints,
-  outdir: 'out/dist',
+  outdir: 'out',
   bundle: true,
   format: 'esm',
   splitting: false,

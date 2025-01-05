@@ -4,8 +4,9 @@ import { accountBootstrap } from '@/features/account/bootstrap';
 
 const { hono, container } = baseBootstrap();
 
-const accountApp = hono.route(Prefix.ACCOUNT, accountBootstrap(container));
-
-export default accountApp;
+export const accountApp = hono.route(
+  Prefix.ACCOUNT,
+  accountBootstrap(container),
+);
 
 export type AccountAppType = typeof accountApp;
